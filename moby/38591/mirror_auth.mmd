@@ -1,0 +1,31 @@
+sequenceDiagram
+    participant U as User
+    participant C as Client
+    participant S as Server
+    activate U
+    U->>C: pull reg.local/image
+    deactivate U
+    activate C
+    C->>S: pull reg.local/image
+    deactivate C
+    activate S
+    S->>S: Configured mirrors:sec-reg.local
+    S->>S: Auth required for sec-reg.local: Yes
+    S->>C: Credentials for sec-reg.local?
+    deactivate S
+    activate C
+    alt no credentials
+        C->>U: Error
+        deactivate C
+    else found credentials
+        activate C
+        C->>S: credentials
+        deactivate C
+        activate S
+        S->>S: pull with new credentials
+        S->>C: success
+        deactivate S
+        activate C
+        C->>U: success
+        deactivate C
+    end
